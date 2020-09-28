@@ -1,4 +1,5 @@
 const Topup = require("../models/topupModel");
+const _ = require("underscore");
 
 exports.getTopup = (req, res) => {
   let { page, limit } = req.query;
@@ -67,4 +68,43 @@ exports.deleteTopup = (req, res) => {
         data: err,
       });
     });
+};
+
+exports.updateTopup = (req, res) => {
+  let { id } = req.params;
+  let { title = "" } = req.body;
+  if (title.trim()) {
+    Topup.getById(id)
+      .then((results) => {
+        if (!_.isEmpty(results[0])) {
+          const data = Object.entries(req.body).map((item) => {
+            return parseInt(item[1]) > 0
+              ? `${item[0]} = ${item[1]}`
+              : `${item[0]} = '${item[1]}'`;
+          });
+          Topup.updateById(id, data)
+            .then((results) => {
+              res.status(200).send({
+                success: true,
+                message: `success update topup id ${id}`,
+                data: results[0],
+              });
+            })
+            .catch((err) => {
+              res.status(500).send({
+                success: false,
+                message: err.message,
+                data: [],
+              });
+            });
+        } else {
+          res.status(404).send({
+            success: false,
+            message: `topup id ${id} not found`,
+            data: [],
+          });
+        }
+      })
+      .catch((err) => {});
+  }
 };
