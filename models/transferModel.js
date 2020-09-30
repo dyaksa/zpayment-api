@@ -31,7 +31,7 @@ module.exports = class Transfer {
 
   static getTransferName(name) {
     return db.execute(
-      `SELECT * FROM users JOIN transfers ON users.id = transfers.user_id WHERE (users.firstName LIKE '%${name}%' OR users.lastName LIKE '%${name}')`
+      `SELECT * FROM users JOIN transfers ON users.id = transfers.user_id WHERE (users.firstName LIKE '%${name}%') ORDER BY users.firstName`
     );
   }
 };

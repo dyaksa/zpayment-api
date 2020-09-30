@@ -100,33 +100,6 @@ exports.getTransfersById = (req, res) => {
     });
 };
 
-exports.getTransfersByName = (req, res) => {
-  let { name } = req.params;
-  Transfers.getTransferName(name)
-    .then((results) => {
-      if (!_.isEmpty(results[0])) {
-        res.status(200).send({
-          success: true,
-          message: `success fetch user name ${name}`,
-          data: results[0],
-        });
-      } else {
-        res.status(404).send({
-          success: false,
-          message: `user ${name} cannot found`,
-          data: [],
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        success: false,
-        message: err.message,
-        data: [],
-      });
-    });
-};
-
 exports.updateTransfer = (req, res) => {
   let { id } = req.params;
   let { amount = "", note = "" } = req.body;
@@ -176,24 +149,50 @@ exports.updateTransfer = (req, res) => {
 };
 
 exports.getTransfers = (req, res) => {
-  let { page, limit } = req.query;
+  let { page, limit, name } = req.query;
   if (!limit) limit = 5;
   else limit = parseInt(limit);
   if (!page) page = 1;
   else page = parseInt(page);
-  Transfers.fetch(page, limit)
-    .then((results) => {
-      res.status(200).send({
-        success: true,
-        message: "transfer data success fetch",
-        data: results[0],
+  if (name) {
+    Transfers.getTransferName(name)
+      .then((results) => {
+        if (!_.isEmpty(results[0])) {
+          res.status(200).send({
+            success: true,
+            message: `success fetch user name ${name}`,
+            data: results[0],
+          });
+        } else {
+          res.status(404).send({
+            success: false,
+            message: `user ${name} cannot found`,
+            data: [],
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({
+          success: false,
+          message: err.message,
+          data: [],
+        });
       });
-    })
-    .catch((err) => {
-      res.status(500).send({
-        success: false,
-        message: err.message,
-        data: [],
+  } else {
+    Transfers.fetch(page, limit)
+      .then((results) => {
+        res.status(200).send({
+          success: true,
+          message: "transfer data success fetch",
+          data: results[0],
+        });
+      })
+      .catch((err) => {
+        res.status(500).send({
+          success: false,
+          message: err.message,
+          data: [],
+        });
       });
-    });
+  }
 };
