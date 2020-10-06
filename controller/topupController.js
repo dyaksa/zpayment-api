@@ -53,21 +53,30 @@ exports.postTopup = (req, res) => {
 
 exports.deleteTopup = (req, res) => {
   const { id } = req.params;
-  Topup.deleteById(id)
-    .then((results) => {
-      res.status(200).send({
-        success: true,
-        message: "success delete topup",
-        data: results,
-      });
-    })
-    .catch((err) => {
-      res.status(500).send({
+  Topup.getById(id).then((results) => {
+    if (!_.isEmpty(results[0])) {
+      Topup.deleteById(id)
+        .then((results) => {
+          res.status(200).send({
+            success: true,
+            message: "success delete topup",
+            data: results,
+          });
+        })
+        .catch((err) => {
+          res.status(500).send({
+            success: false,
+            message: "Internal server error",
+            data: err,
+          });
+        });
+    } else {
+      res.status(404).send({
         success: false,
-        message: "Internal server error",
-        data: err,
+        message: `id is not found`,
       });
-    });
+    }
+  });
 };
 
 exports.updateTopup = (req, res) => {

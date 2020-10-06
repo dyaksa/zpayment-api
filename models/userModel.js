@@ -34,6 +34,6 @@ module.exports = class User {
   }
 
   static deleteById(id) {
-    return db.execute(`DELETE FROM users WHERE id = ${id}`);
+    return db.execute(`DELETE users FROM users WHERE id = ${id}`);
   }
 };

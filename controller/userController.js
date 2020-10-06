@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const Topup = require("../models/topupModel");
 const _ = require("underscore");
 
 exports.postUser = (req, res) => {
@@ -166,6 +167,7 @@ exports.deleteUser = (req, res) => {
       if (!_.isEmpty(results[0])) {
         User.deleteById(id)
           .then((results) => {
+            console.log("masuk ke success");
             res.status(200).send({
               success: true,
               message: `success delete user ${id}`,
@@ -190,7 +192,7 @@ exports.deleteUser = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         success: false,
-        message: err.message,
+        message: "Internal server Error",
         data: [],
       });
     });
