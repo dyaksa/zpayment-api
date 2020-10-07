@@ -21,6 +21,6 @@ app.use("/api/v1/user", userRoute);
 //transfers route
 app.use("/api/v1/transfer", transferRoute);
 
-app.listen(8000, () => {
-  console.log("server running on port 8000");
+app.listen(3000, () => {
+  console.log("server running on port 3000");
 });
