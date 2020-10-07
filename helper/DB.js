@@ -1,7 +1,7 @@
 const mysql = require("mysql2");
 
 const conn = mysql.createConnection({
-  host: process.env.DB_HOST,
+  host: "localhost",
   user: "root",
   password: "",
   database: "zpayment",
