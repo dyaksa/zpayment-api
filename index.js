@@ -22,5 +22,5 @@ app.use("/api/v1/user", userRoute);
 app.use("/api/v1/transfer", transferRoute);
 
 app.listen(process.env.PORT || 3000, function () {
-  console.log("server berjalan");
+  console.log("server runing on port 3000");
 });
