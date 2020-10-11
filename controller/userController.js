@@ -1,32 +1,10 @@
 const User = require("../models/userModel");
 const Topup = require("../models/topupModel");
 const _ = require("underscore");
+const bcrypt = require("bcrypt");
 
 exports.postUser = (req, res) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    pin,
-    phone,
-    photo,
-    balance,
-    userInformation,
-    verified,
-  } = req.body;
-  User.save(
-    firstName,
-    lastName,
-    email,
-    password,
-    pin,
-    phone,
-    photo,
-    balance,
-    userInformation,
-    verified
-  )
+  User.save(req.body)
     .then((results) => {
       res.status(201).send({
         success: true,
@@ -37,7 +15,7 @@ exports.postUser = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         success: false,
-        message: err.message,
+        message: "Internal server error",
         data: [],
       });
     });
@@ -72,8 +50,18 @@ exports.userUpdate = (req, res) => {
   ) {
     User.getById(id)
       .then((results) => {
-        if (results.length) {
-          const data = Object.entries(req.body).map((item) => {
+        if (!_.isEmpty(results[0])) {
+          let body = {};
+          if (req.body.password) {
+            const { password } = req.body;
+            body = {
+              ...req.body,
+              password: bcrypt.hashSync(password, 10),
+            };
+          } else {
+            body = { ...req.body };
+          }
+          const data = Object.entries(body).map((item) => {
             return parseInt(item[1]) > 0
               ? `${item[0]} = ${item[1]}`
               : `${item[0]} = '${item[1]}'`;
@@ -92,12 +80,17 @@ exports.userUpdate = (req, res) => {
                 message: "failed update user",
               });
             });
+        } else {
+          res.status(404).send({
+            success: false,
+            message: "users not found",
+          });
         }
       })
       .catch((err) => {
         res.status(500).send({
           success: false,
-          message: err.message,
+          message: "Internal server error",
           data: [],
         });
       });

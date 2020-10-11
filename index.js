@@ -5,8 +5,8 @@ const bodyParser = require("body-parser");
 const toupupRoute = require("./routes/topup");
 const userRoute = require("./routes/user");
 const transferRoute = require("./routes/transfer");
-const dotenv = require("dotenv");
-dotenv.config();
+const authRoute = require("./routes/auth");
+const dotenv = require("dotenv").config();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
@@ -20,7 +20,9 @@ app.use("/api/v1/topup", toupupRoute);
 app.use("/api/v1/user", userRoute);
 //transfers route
 app.use("/api/v1/transfer", transferRoute);
+//auth
+app.use("/api/v1/auth", authRoute);
 
-app.listen(process.env.PORT || 3000, function () {
-  console.log("server runing on port 3000");
+app.listen(process.env.PORT || 8000, function () {
+  console.log("server runing on port 8000");
 });

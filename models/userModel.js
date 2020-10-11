@@ -1,32 +1,54 @@
 const db = require("../helper/DB");
+const bcrypt = require("bcrypt");
+const { result } = require("underscore");
 
 module.exports = class User {
-  static save(
-    firstName,
-    lastName,
-    email,
-    password,
-    pin,
-    phone,
-    photo,
-    balance,
-    userInformation,
-    verified
-  ) {
-    return db.execute(
-      `INSERT INTO users (firstName, lastName, email, password, pin, phone, photo, balance, userInformation, verified) 
-        VALUES ('${firstName}','${lastName}','${email}','${password}','${pin}','${phone}','${photo}','${balance}','${userInformation}',${verified})`
-    );
+  static save(data) {
+    return new Promise((resolve, reject) => {
+      const { password } = data;
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(password, salt, (err, hash) => {
+          const body = { ...data, password: hash };
+          db.query("INSERT INTO users SET ?", body)
+            .then((results) => {
+              resolve(results);
+            })
+            .catch((err) => {
+              reject(err);
+            });
+        });
+      });
+    });
   }
 
   static fetch(page, limit) {
-    return db.execute(
-      `SELECT * FROM users LIMIT ${limit} OFFSET ${(page - 1) * limit}`
-    );
+    return new Promise((resolve, reject) => {
+      db.query(
+        `SELECT * FROM roles JOIN users ON roles.id = users.roles LIMIT ${limit} OFFSET ${
+          (1 - page) * limit
+        }`
+      )
+        .then((results) => {
+          resolve(results);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
   }
 
   static getById(id) {
-    return db.execute(`SELECT * FROM users WHERE id = ${id}`);
+    return new Promise((resolve, reject) => {
+      db.query(
+        `SELECT * FROM roles JOIN users ON roles.id = users.roles WHERE users.id = ${id}`
+      )
+        .then((results) => {
+          resolve(results);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
   }
 
   static updateById(id, data) {
@@ -35,5 +57,17 @@ module.exports = class User {
 
   static deleteById(id) {
     return db.execute(`DELETE users FROM users WHERE id = ${id}`);
+  }
+
+  static findByEmail(email) {
+    return new Promise((resolve, reject) => {
+      db.query(`SELECT * FROM users WHERE email = '${email}'`)
+        .then((results) => {
+          resolve(results);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
   }
 };
