@@ -9,15 +9,26 @@ module.exports = class Transfer {
 
   static fetch(page, limit) {
     return db.execute(
-      `SELECT * FROM users JOIN transfers ON users.id = transfers.user_id LIMIT ${limit} OFFSET ${
+      `SELECT * FROM users JOIN transfers ON users.id = transfers.receive_id LIMIT ${limit} OFFSET ${
         (1 - page) * limit
       }`
     );
   }
 
+  static findTransactionById(id){
+    return new Promise((resolve,reject) => {
+      db.query(`SELECT * FROM users JOIN transfers ON users.id = transfers.receive_id WHERE transfers.sender_id = ${id}`)
+      .then(results => {
+        resolve(results);
+      }).catch(err => {
+        reject(err);
+      })
+    });
+  }
+
   static getById(id) {
     return db.execute(
-      `SELECT * FROM users JOIN transfers ON users.id = transfers.user_id WHERE transfers.id = ${id}`
+      `SELECT * FROM users JOIN transfers ON users.id = transfers.receive_id WHERE transfers.id = ${id}`
     );
   }
 
@@ -31,7 +42,7 @@ module.exports = class Transfer {
 
   static getTransferName(name) {
     return db.execute(
-      `SELECT * FROM users JOIN transfers ON users.id = transfers.user_id WHERE (users.firstName LIKE '%${name}%') ORDER BY users.firstName`
+      `SELECT * FROM users JOIN transfers ON users.id = transfers.receive_id WHERE (users.firstName LIKE '%${name}%') ORDER BY users.firstName`
     );
   }
 };

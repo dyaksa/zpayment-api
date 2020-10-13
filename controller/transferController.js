@@ -74,7 +74,7 @@ exports.deleteTransfers = (req, res) => {
     });
 };
 
-exports.getTransfersById = (req, res) => {
+exports.getById = (req, res) => {
   let { id } = req.params;
   Transfers.getById(id)
     .then((results) => {
@@ -179,7 +179,31 @@ exports.getTransfers = (req, res) => {
         });
       });
   } else {
-    Transfers.fetch(page, limit)
+    if(req.Id){
+      Transfers.findTransactionById(req.Id)
+      .then(results => {
+        if(!_.isEmpty(results[0])){
+          res.status(200).send({
+            success: true,
+            message: "transfer data success fetch",
+            data: results[0]
+          })
+        }else{
+          res.status(404).send({
+            success: false,
+            message: "transaction not found",
+            data:[]
+          })
+        }
+      }).catch(err => {
+        res.status(500).send({
+          success: false,
+          message: "Internal server Error",
+          data:[]
+        })
+      });
+    }else{
+      Transfers.fetch(page, limit)
       .then((results) => {
         res.status(200).send({
           success: true,
@@ -194,5 +218,6 @@ exports.getTransfers = (req, res) => {
           data: [],
         });
       });
+    }
   }
 };
