@@ -6,9 +6,11 @@ const toupupRoute = require("./routes/topup");
 const userRoute = require("./routes/user");
 const transferRoute = require("./routes/transfer");
 const authRoute = require("./routes/auth");
+const uploadRoute = require("./routes/upload");
 const dotenv = require("dotenv").config();
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static('public'))
 app.use(cors());
 app.get("/", (req, res) => {
   res.send("Hello World");
@@ -22,6 +24,8 @@ app.use("/api/v1/user", userRoute);
 app.use("/api/v1/transfer", transferRoute);
 //auth
 app.use("/api/v1/auth", authRoute);
+//upload
+app.use("/api/v1/upload", uploadRoute);
 
 app.listen(process.env.PORT || 8000, function () {
   console.log("server runing on port 8000");
