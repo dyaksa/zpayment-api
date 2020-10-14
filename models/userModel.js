@@ -52,11 +52,25 @@ module.exports = class User {
   }
 
   static updateById(id, data) {
-    return db.execute(`UPDATE users SET ${data} WHERE id = ${id}`);
+    return new Promise((resolve,reject) => {
+      db.query(`UPDATE users SET ${data} WHERE id = ${id}`).then(results => {
+        resolve(results);
+      }).catch(err => {
+        reject(err);
+      })
+    })
   }
 
   static deleteById(id) {
-    return db.execute(`DELETE users FROM users WHERE id = ${id}`);
+    return new Promise((resolve,reject) => {
+      db.query(`DELETE users, transfers FROM users INNER JOIN transfers ON users.id = transfers.sender_id WHERE users.id = ${id}`)
+      .then(results => {
+        resolve(results);
+      }).catch(err => {
+        reject(err);
+      })
+    });
+    // return db.execute(`DELETE users FROM users WHERE id = ${id}`);
   }
 
   static findByEmail(email) {

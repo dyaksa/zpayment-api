@@ -22,7 +22,7 @@ exports.postUser = (req, res) => {
 };
 
 exports.userUpdate = (req, res) => {
-  let { id } = req.params;
+  console.log(id);
   let {
     firstName = "",
     lastName = "",
@@ -160,7 +160,6 @@ exports.deleteUser = (req, res) => {
       if (!_.isEmpty(results[0])) {
         User.deleteById(id)
           .then((results) => {
-            console.log("masuk ke success");
             res.status(200).send({
               success: true,
               message: `success delete user ${id}`,

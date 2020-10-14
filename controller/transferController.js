@@ -4,11 +4,11 @@ const _ = require("underscore");
 
 exports.addTransfers = (req, res) => {
   let { userId } = req.params;
-  let { amount, note } = req.body;
   User.getById(userId)
     .then((userData) => {
       if (!_.isEmpty(userData[0])) {
-        Transfers.save(amount, note, userId)
+        const data = {...req.body, sender_id: req.userId, receive_id: userId};
+        Transfers.save(data)
           .then((results) => {
             res.status(201).send({
               success: true,

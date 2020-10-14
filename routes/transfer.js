@@ -13,7 +13,7 @@ transferController.getById);
 
 route.post(
   "/:userId",
-  [verifyJwtToken.verifyToken, verifyJwtToken.isAdmin],
+  [verifyJwtToken.verifyToken],
   transferController.addTransfers
 );
 

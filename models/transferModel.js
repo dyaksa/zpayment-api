@@ -1,10 +1,14 @@
 const db = require("../helper/DB");
 
 module.exports = class Transfer {
-  static save(amount, note, userId) {
-    return db.execute(
-      `INSERT INTO transfers (amount, note, user_id) VALUES ('${amount}','${note}',${userId})`
-    );
+  static save(data) {
+    return new Promise((resolve,reject) => {
+      db.query("INSERT INTO transfers SET ?", data).then(results => {
+        resolve(results);
+      }).catch(err => {
+        reject(err);
+      })
+    });
   }
 
   static fetch(page, limit) {

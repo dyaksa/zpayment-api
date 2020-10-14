@@ -4,16 +4,20 @@ const userController = require("../controller/userController");
 const verify = require("../middleware/verify");
 const verifyJwtToken = require("../middleware/verifyJwtToken");
 
-route.get("/", userController.getUser);
-route.get("/:id", userController.getById);
+route.get("/", [verifyJwtToken.verifyToken], userController.getUser);
+
+route.get("/:id",
+[verifyJwtToken.verifyToken], 
+userController.getById);
+
 route.post(
   "/",
   [verifyJwtToken.verifyToken, verifyJwtToken.isAdmin, verify.verifyEmail],
   userController.postUser
 );
 route.patch(
-  "/:id",
-  [verifyJwtToken.verifyToken, verifyJwtToken.isAdmin],
+  "/",
+  [verifyJwtToken.verifyToken],
   userController.userUpdate
 );
 route.delete(
