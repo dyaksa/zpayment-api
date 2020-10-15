@@ -6,10 +6,10 @@ const { result } = require("underscore");
 module.exports = class Auth {
   static register(data) {
     return new Promise((resolve, reject) => {
-      const { password } = data;
+      const { password, email } = data;
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(password, salt, (err, hash) => {
-          const body = { ...data, password: hash, roles: 2 };
+          const body = { ...data, email: email.toLowerCase(), password: hash, roles: 2 };
           db.query("INSERT INTO users SET ?", body)
             .then((results) => {
               resolve(results);
@@ -24,7 +24,7 @@ module.exports = class Auth {
 
   static login(email) {
     return new Promise((resolve, reject) => {
-      User.findByEmail(email)
+      User.findByEmail(email.toLowerCase())
         .then((results) => {
           resolve(results[0]);
         })

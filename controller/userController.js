@@ -22,7 +22,7 @@ exports.postUser = (req, res) => {
 };
 
 exports.userUpdate = (req, res) => {
-  console.log(id);
+  let id = req.userId;
   let {
     firstName = "",
     lastName = "",
