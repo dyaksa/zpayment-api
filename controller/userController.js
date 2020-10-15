@@ -58,8 +58,10 @@ exports.userUpdate = (req, res) => {
               ...req.body,
               password: bcrypt.hashSync(password, 10),
             };
-          } else {
-            body = { ...req.body };
+          }else if(req.file) {
+            body = { ...req.body, photo: `${process.env.BASE_URI}/public/${req.file.filename}`};
+          }else{
+            body = {...req.body};
           }
           const data = Object.entries(body).map((item) => {
             return parseInt(item[1]) > 0

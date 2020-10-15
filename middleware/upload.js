@@ -19,12 +19,6 @@ const uploadImage = (req,res,next) => {
               message: err.message
             })
         }
-        if(!req.file){
-            return res.status(500).send({
-                success: false,
-                message: "Please select an image to upload"
-            })
-        }
         if(err instanceof multer.MulterError){
             return res.status(500).send({
                 success: false,

@@ -3,6 +3,7 @@ const route = express.Router();
 const userController = require("../controller/userController");
 const verify = require("../middleware/verify");
 const verifyJwtToken = require("../middleware/verifyJwtToken");
+const upload = require("../middleware/upload");
 
 route.get("/", [verifyJwtToken.verifyToken], userController.getUser);
 
@@ -17,7 +18,7 @@ route.post(
 );
 route.patch(
   "/",
-  [verifyJwtToken.verifyToken],
+  [verifyJwtToken.verifyToken,upload.uploadImage],
   userController.userUpdate
 );
 route.delete(
