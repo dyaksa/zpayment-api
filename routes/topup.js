@@ -4,7 +4,7 @@ const topupController = require("../controller/topupController");
 const verifyJwtToken = require("../middleware/verifyJwtToken");
 
 //topup router
-route.get("/", topupController.getTopup);
+route.get("/",[verifyJwtToken.verifyToken], topupController.getTopup);
 route.post(
   "/",
   [verifyJwtToken.verifyToken, verifyJwtToken.isAdmin],
