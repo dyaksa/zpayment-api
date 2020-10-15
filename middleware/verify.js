@@ -1,4 +1,3 @@
-const { result } = require("underscore");
 const User = require("../models/userModel");
 const _ = require("underscore");
 
