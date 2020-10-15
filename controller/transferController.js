@@ -155,7 +155,7 @@ exports.getTransfers = (req, res) => {
   if (!page) page = 1;
   else page = parseInt(page);
   if (name) {
-    Transfers.getTransferName(name)
+    Transfers.getTransferName(req.userId,name)
       .then((results) => {
         if (!_.isEmpty(results[0])) {
           res.status(200).send({
@@ -166,7 +166,7 @@ exports.getTransfers = (req, res) => {
         } else {
           res.status(404).send({
             success: false,
-            message: `user ${name} cannot found`,
+            message: `transaction ${name} cannot found`,
             data: [],
           });
         }
@@ -179,45 +179,26 @@ exports.getTransfers = (req, res) => {
         });
       });
   } else {
-    if(req.Id){
-      Transfers.findTransactionById(req.Id)
-      .then(results => {
-        if(!_.isEmpty(results[0])){
-          res.status(200).send({
-            success: true,
-            message: "transfer data success fetch",
-            data: results[0]
-          })
-        }else{
-          res.status(404).send({
-            success: false,
-            message: "transaction not found",
-            data:[]
-          })
-        }
-      }).catch(err => {
-        res.status(500).send({
-          success: false,
-          message: "Internal server Error",
-          data:[]
-        })
-      });
-    }else{
-      Transfers.fetch(page, limit)
-      .then((results) => {
+    Transfers.fetch(req.userId, page,limit).then(results => {
+      if(!_.isEmpty(results[0])){
         res.status(200).send({
           success: true,
-          message: "transfer data success fetch",
-          data: results[0],
-        });
-      })
-      .catch((err) => {
-        res.status(500).send({
+          message: "success fetch data user",
+          data: results[0]
+        })
+      }else{
+        res.status(404).send({
           success: false,
-          message: err.message,
-          data: [],
-        });
-      });
-    }
+          message: "transaction not found",
+          data: []
+        })
+      }
+    }).catch(err => {
+      res.status(500).send({
+        success: false,
+        message: "Internal server error",
+        data:[]
+      })
+    })
   }
 };

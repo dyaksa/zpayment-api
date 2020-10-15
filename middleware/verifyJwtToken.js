@@ -48,26 +48,4 @@ module.exports = {
         });
       });
   },
-
-  isUserOrAdmin(req,res,next){
-    User.getById(req.userId)
-    .then(results => {
-      if(results[0][0].roleName.toLowerCase() === "admin"){
-        next();
-        req.adminId = results[0][0].id;
-        return;
-      }
-      if(results[0][0].roleName.toLowerCase() === "user"){
-        req.Id = results[0][0].id;
-        next();
-        return;
-      }
-    }).catch(err => {
-      return res.status(500).send({
-        auth: false,
-        success: false,
-        message: err
-      })
-    })
-  }
 };

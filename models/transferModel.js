@@ -11,18 +11,11 @@ module.exports = class Transfer {
     });
   }
 
-  static fetch(page, limit) {
-    return db.execute(
-      `SELECT * FROM users JOIN transfers ON users.id = transfers.receive_id LIMIT ${limit} OFFSET ${
-        (1 - page) * limit
-      }`
-    );
-  }
-
-  static findTransactionById(id){
+  static fetch(id,page, limit) {
     return new Promise((resolve,reject) => {
-      db.query(`SELECT * FROM users JOIN transfers ON users.id = transfers.receive_id WHERE transfers.sender_id = ${id}`)
-      .then(results => {
+      db.query(`SELECT * FROM users JOIN transfers ON users.id = transfers.receive_id WHERE transfers.sender_id = ${id} LIMIT ${limit} OFFSET ${
+        (1 - page) * limit
+      }`).then(results => {
         resolve(results);
       }).catch(err => {
         reject(err);
@@ -44,9 +37,9 @@ module.exports = class Transfer {
     return db.execute(`UPDATE transfers SET ${data} WHERE id = ${id}`);
   }
 
-  static getTransferName(name) {
+  static getTransferName(id,name) {
     return db.execute(
-      `SELECT * FROM users JOIN transfers ON users.id = transfers.receive_id WHERE (users.firstName LIKE '%${name}%') ORDER BY users.firstName`
+      `SELECT * FROM users JOIN transfers ON users.id = transfers.receive_id WHERE (users.firstName LIKE '%${name}%' AND transfers.sender_id = ${id}) ORDER BY users.firstName`
     );
   }
 };

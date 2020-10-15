@@ -4,7 +4,7 @@ const transferController = require("../controller/transferController");
 const verifyJwtToken = require("../middleware/verifyJwtToken");
 
 route.get("/",
-[verifyJwtToken.verifyToken, verifyJwtToken.isUserOrAdmin],
+[verifyJwtToken.verifyToken],
 transferController.getTransfers);
 
 route.get("/:id",
