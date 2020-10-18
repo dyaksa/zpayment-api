@@ -129,7 +129,7 @@ exports.getUser = (req, res) => {
 };
 
 exports.getById = (req, res) => {
-  const { id } = req.params;
+  const id  = req.userId;
   User.getById(id)
     .then((results) => {
       if (!_.isEmpty(results[0])) {

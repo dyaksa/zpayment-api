@@ -7,7 +7,7 @@ const upload = require("../middleware/upload");
 
 route.get("/", [verifyJwtToken.verifyToken], userController.getUser);
 
-route.get("/:id",
+route.get("/detail",
 [verifyJwtToken.verifyToken], 
 userController.getById);
 
