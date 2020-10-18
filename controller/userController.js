@@ -105,13 +105,38 @@ exports.userUpdate = (req, res) => {
 };
 
 exports.getUser = (req, res) => {
-  let { page, limit } = req.query;
+  let { page, limit, name } = req.query;
   if (!page) page = 1;
   else page = parseInt(page);
   if (!limit) limit = 5;
   else limit = parseInt(limit);
 
-  User.fetch(page, limit)
+  if(name){
+    User.getUserByName(name,limit,page)
+    .then(results => {
+      if(!_.isEmpty(results[0])){
+        res.status(200).send({
+          success: true,
+          message: `user ${name} founded`,
+          data: results[0] 
+        })
+      }else{
+        res.status(404).send({
+          success: false,
+          message: `user  ${name} not founded`,
+          data: []
+        })
+      }
+    }).catch(err => {
+        res.status(500).send({
+          success: false,
+          message: "Internal server error",
+          data: []
+      })
+    })
+  }else{
+    //when name is empty
+    User.fetch(page, limit)
     .then((results) => {
       res.status(200).send({
         success: true,
@@ -126,6 +151,7 @@ exports.getUser = (req, res) => {
         data: err.message,
       });
     });
+  }
 };
 
 exports.getById = (req, res) => {

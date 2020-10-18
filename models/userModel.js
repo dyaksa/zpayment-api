@@ -70,7 +70,6 @@ module.exports = class User {
         reject(err);
       })
     });
-    // return db.execute(`DELETE users FROM users WHERE id = ${id}`);
   }
 
   static findByEmail(email) {
@@ -83,5 +82,17 @@ module.exports = class User {
           reject(err);
         });
     });
+  }
+
+  static getUserByName(name, limit, page){
+    return new Promise((resolve,reject) => {
+      db.query(`SELECT * FROM roles JOIN users ON roles.id = users.roles WHERE users.firstName LIKE '%${name}%' LIMIT ${limit} OFFSET ${
+        (1 - page) * limit
+      }`).then(results => {
+        resolve(results);
+      }).catch(err =>{
+        reject(err);
+      })
+    })
   }
 };
