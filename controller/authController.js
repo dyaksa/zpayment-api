@@ -69,7 +69,7 @@ exports.login = (req, res) => {
         email: email,
         auth: false,
         accessToken: null,
-        message: "password is not match",
+        message: "Internal server error",
       });
     });
 };
