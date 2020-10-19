@@ -28,7 +28,7 @@ exports.login = (req, res) => {
   authModel
     .login(email)
     .then((user) => {
-      if (!_.isEmpty(user[0])) {
+      if (!_.isEmpty(user)) {
         let passwordIsValid = bcrypt.compareSync(password, user[0].password);
         if (!passwordIsValid) {
           return res.status(401).send({
@@ -48,7 +48,7 @@ exports.login = (req, res) => {
             expiresIn: 86400,
           }
         );
-        res.status(201).send({
+        return res.status(201).send({
           success: true,
           email: email,
           auth: true,
@@ -56,7 +56,7 @@ exports.login = (req, res) => {
           message: "user is loged in",
         });
       } else {
-        res.status(404).send({
+        return res.status(404).send({
           success: false,
           message: "email is not exists",
           data: results[0],
@@ -64,12 +64,12 @@ exports.login = (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(500).send({
+      return res.status(404).send({
         success: false,
         email: email,
         auth: false,
         accessToken: null,
-        message: "Internal server error",
+        message: "email is not exists",
       });
     });
 };
