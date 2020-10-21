@@ -59,7 +59,7 @@ exports.userUpdate = (req, res) => {
               password: bcrypt.hashSync(password, 10),
             };
           }else if(req.file) {
-            body = { ...req.body, photo: `${process.env.BASE_URI}/public/${req.file.filename}`};
+            body = { ...req.body, photo: `${process.env.BASE_URI}/${req.file.filename}`};
           }else{
             body = {...req.body};
           }

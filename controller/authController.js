@@ -36,23 +36,27 @@ exports.login = (req, res) => {
             email: email,
             auth: false,
             accessToken: null,
+            data: {},
             message: "password is not match",
           });
         }
         let token = jwt.sign(
           {
             id: user[0].id,
+            email: user[0].email,
           },
-          process.env.SECRET_KEY,
-          {
-            expiresIn: 86400,
-          }
+          process.env.SECRET_KEY
         );
         return res.status(201).send({
           success: true,
           email: email,
           auth: true,
           accessToken: token,
+          user: {
+            id: user[0].id,
+            firstName: user[0].firstName,
+            lastName: user[0].lastName,
+          },
           message: "user is loged in",
         });
       } else {
