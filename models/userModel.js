@@ -86,9 +86,10 @@ module.exports = class User {
 
   static getUserByName(name, limit, page){
     return new Promise((resolve,reject) => {
-      db.query(`SELECT * FROM roles JOIN users ON roles.id = users.roles WHERE users.firstName LIKE '%${name}%' LIMIT ${limit} OFFSET ${
+      db.query(`SELECT * FROM roles JOIN users ON roles.id = users.roles WHERE users.firstName LIKE '%${name}%' ORDER BY users.firstName LIMIT ${limit} OFFSET ${
         (1 - page) * limit
-      }`).then(results => {
+      }`)
+      .then(results => {
         resolve(results);
       }).catch(err =>{
         reject(err);

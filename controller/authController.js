@@ -1,4 +1,5 @@
 const authModel = require("../models/authModel");
+const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const _ = require("underscore");
@@ -22,6 +23,46 @@ exports.register = (req, res) => {
       });
     });
 };
+
+exports.forgot = async (req,res) => {
+  const {email, password} = req.body
+  try {
+    const result = await userModel.findByEmail(email);
+    if(!_.isEmpty(result[0])){
+      const { id } = result[0][0];
+      const passwordCrypt = bcrypt.hashSync(password,10);
+      const body = {
+        password: passwordCrypt
+      }
+      const data = Object.entries(body).map((item) => {
+        return parseInt(item[1]) > 0
+          ? `${item[0]} = ${item[1]}`
+          : `${item[0]} = '${item[1]}'`;
+      });
+      const updated = await userModel.updateById(id, data);
+      if(updated[0].affectedRoews){
+        return res.status(201).send({
+          success: true,
+          message: "success change password"
+        })
+      }
+      return res.status(401).send({
+        success: false,
+        message: "change password is failed"
+      })
+    }else{
+      return res.status(404).send({
+        success: false,
+        message: "email is not found"
+      })
+    }
+  }catch(err){
+    return res.status(500).send({
+      success: false,
+      message: err.message
+    })
+  }
+}
 
 exports.login = (req, res) => {
   const { email, password } = req.body;

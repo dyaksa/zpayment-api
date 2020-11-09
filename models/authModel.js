@@ -1,7 +1,6 @@
 const db = require("../helper/DB");
 const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
-const { result } = require("underscore");
 
 module.exports = class Auth {
   static register(data) {
