@@ -26,6 +26,27 @@ module.exports = {
     });
   },
 
+  isEmailFound(req,res,next){
+    let tokenHeader = req.headers["x-access-token"];
+    if(!tokenHeader){
+      return res.status(403).send({
+        success: false,
+        message: "no token provided"
+      })
+    }
+    jwt.verify(tokenHeader, config.secret, (err, decoded) => {
+      if(err){
+        return res.status(500).send({
+          success: false,
+          message: err
+        })
+      }
+      req.userId = decoded.id;
+      next();
+    })
+  },
+
+
   isAdmin(req, res, next) {
     User.getById(req.userId)
       .then((user) => {

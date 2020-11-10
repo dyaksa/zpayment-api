@@ -3,7 +3,6 @@ const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const _ = require("underscore");
-const config = require("../config/configRoles");
 
 exports.register = (req, res) => {
   authModel
@@ -24,12 +23,41 @@ exports.register = (req, res) => {
     });
 };
 
-exports.forgot = async (req,res) => {
-  const {email, password} = req.body
+exports.findEmail = async (req,res) => {
+  const { email } = req.body;
   try {
     const result = await userModel.findByEmail(email);
     if(!_.isEmpty(result[0])){
-      const { id } = result[0][0];
+      let token = jwt.sign(
+        {
+          id: result[0][0].id
+        },
+        process.env.SECRET_KEY,
+        {
+          expiresIn: Math.floor(Date.now() / 1000) + (60 * 60)
+        }
+      )
+      return res.status(200).send({
+        success: true,
+        accessToken: token,
+        message: "email founded"
+      })
+    }
+    return res.status(404).send({
+      success: false,
+      message: "email is not exists"
+    })
+  }catch(err){
+    return res.statu(500).send({
+      success: false,
+      message: "Internal server error"
+    })
+  }
+} 
+
+exports.updatedPassword = async (req,res) => {
+  const { password } = req.body;
+  try {
       const passwordCrypt = bcrypt.hashSync(password,10);
       const body = {
         password: passwordCrypt
@@ -39,8 +67,8 @@ exports.forgot = async (req,res) => {
           ? `${item[0]} = ${item[1]}`
           : `${item[0]} = '${item[1]}'`;
       });
-      const updated = await userModel.updateById(id, data);
-      if(updated[0].affectedRoews){
+      const updated = await userModel.updateById(req.userId, data);
+      if(updated[0].affectedRows){
         return res.status(201).send({
           success: true,
           message: "success change password"
@@ -50,12 +78,6 @@ exports.forgot = async (req,res) => {
         success: false,
         message: "change password is failed"
       })
-    }else{
-      return res.status(404).send({
-        success: false,
-        message: "email is not found"
-      })
-    }
   }catch(err){
     return res.status(500).send({
       success: false,
