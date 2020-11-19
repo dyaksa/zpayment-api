@@ -6,10 +6,10 @@ const verifyJwtToken = require("../middleware/verifyJwtToken");
 const upload = require("../middleware/upload");
 
 route.get("/", [verifyJwtToken.verifyToken], userController.getUser);
-
+route.get("/:id",[verifyJwtToken.verifyToken], userController.getUserById);
 route.get("/detail",
 [verifyJwtToken.verifyToken], 
-userController.getById);
+userController.getUserLogin);
 
 route.post(
   "/",

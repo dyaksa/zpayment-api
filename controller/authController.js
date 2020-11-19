@@ -3,10 +3,12 @@ const userModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const _ = require("underscore");
+const faker = require("faker");
 
 exports.register = (req, res) => {
+  const data = {...req.body, uuid: faker.random.uuid()}
   authModel
-    .register(req.body)
+    .register(data)
     .then((results) => {
       res.status(201).send({
         success: true,

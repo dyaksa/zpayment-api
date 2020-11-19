@@ -22,13 +22,13 @@ const uploadImage = (req,res,next) => {
         if(err instanceof multer.MulterError){
             return res.status(500).send({
                 success: false,
-                message: err
+                message: err.message
             })
         }
         if(err){
             return res.status(500).send({
                 success: false,
-                message: err
+                message: err.message
             });
         }
         next();

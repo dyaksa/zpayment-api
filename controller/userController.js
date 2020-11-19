@@ -154,7 +154,7 @@ exports.getUser = (req, res) => {
   }
 };
 
-exports.getById = (req, res) => {
+exports.getUserLogin = (req, res) => {
   const id  = req.userId;
   User.getById(id)
     .then((results) => {
@@ -180,6 +180,31 @@ exports.getById = (req, res) => {
       });
     });
 };
+
+exports.getUserById =  async (req,res) => {
+    try {
+      let { id } = req.params;
+      const user = await User.getById(id);
+      if(_.isEmpty(user[0])){
+        return res.status(404).send({
+          success: false,
+          message: "user cannot found",
+          data: []
+        })
+      }
+      return res.status(200).send({
+        success: true,
+        message: `user ${id} founded`,
+        data: user[0]
+      })
+    }catch(err){
+      return res.status(500).send({
+        success: false,
+        message: "internal server error",
+        data: []
+      })
+    }
+}
 
 exports.deleteUser = (req, res) => {
   let { id } = req.params;
