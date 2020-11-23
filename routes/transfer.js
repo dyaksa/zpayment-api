@@ -5,7 +5,15 @@ const verifyJwtToken = require("../middleware/verifyJwtToken");
 
 route.get("/",
 [verifyJwtToken.verifyToken],
-transferController.getTransfers);
+transferController.getTransfersByUserLogin);
+
+route.get("/income",
+[verifyJwtToken.verifyToken],
+transferController.getIncome);
+
+route.get("/expense",
+[verifyJwtToken.verifyToken],
+transferController.getExpense);
 
 route.get("/:id",
 [verifyJwtToken.verifyToken, verifyJwtToken.isAdmin], 

@@ -63,7 +63,7 @@ module.exports = class User {
 
   static deleteById(id) {
     return new Promise((resolve,reject) => {
-      db.query(`DELETE users, transfers FROM users INNER JOIN transfers ON users.id = transfers.sender_id WHERE users.id = ${id}`)
+      db.query(`DELETE users, transactions FROM users INNER JOIN transactions ON users.id = transactions.sender_id WHERE users.id = ${id}`)
       .then(results => {
         resolve(results);
       }).catch(err => {

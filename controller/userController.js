@@ -121,7 +121,7 @@ exports.getUser = (req, res) => {
           data: results[0] 
         })
       }else{
-        res.status(404).send({
+        res.status(200).send({
           success: false,
           message: `user  ${name} not founded`,
           data: []
@@ -153,6 +153,10 @@ exports.getUser = (req, res) => {
     });
   }
 };
+
+exports.testUser = (req,res) => {
+  console.log("halo");
+}
 
 exports.getUserLogin = (req, res) => {
   const id  = req.userId;

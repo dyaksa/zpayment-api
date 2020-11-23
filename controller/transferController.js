@@ -2,6 +2,8 @@ const Transfers = require("../models/transferModel");
 const User = require("../models/userModel");
 const _ = require("underscore");
 const entries = require("../helper/entries");
+const OneSignal = require("onesignal-node");
+const client = new OneSignal.Client(process.env.ONESIGNAL_APP_ID,process.env.ONESIGNAL_API_KEY);
 
 exports.addTransfers = async (req, res) => {
   try {
@@ -54,10 +56,25 @@ exports.addTransfers = async (req, res) => {
         data: transfered[0]
       })
     }
+
+    const notification = {
+      headings: {
+        "en": "Congratulations your funds have been entered 🌈"
+      },
+      contents: {
+        "en": `Transfer from ${sender[0][0].firstName} ${sender[0][0].lastName} of ${amount} has entered your wallet 🎁`
+      },
+      include_segments: ["Subscribed Users"],
+      filters: [
+        { "field": "email", "value": `${receive[0][0].email}` }
+      ]
+    }
+    const response = await client.createNotification(notification)
     return res.status(201).send({
       success: true,
       message: `success transfer to ${receive[0][0].firstName} amount ${amount}`,
-      data: transfered[0]
+      data: transfered[0],
+      notification_id: response.body.id
     })
   }catch(err){
     return res.status(500).send({
@@ -66,40 +83,6 @@ exports.addTransfers = async (req, res) => {
       data:[]
     })
   }
-
-  // User.getById(userId)
-  //   .then((userData) => {
-  //     if (!_.isEmpty(userData[0])) {
-  //       const data = {...req.body, sender_id: req.userId, receive_id: userId};
-  //       Transfers.save(data)
-  //         .then((results) => {
-  //           res.status(201).send({
-  //             success: true,
-  //             message: "success add transfers data",
-  //             data: results[0],
-  //           });
-  //         })
-  //         .catch((err) => {
-  //           res.status(500).send({
-  //             success: false,
-  //             message: err.message,
-  //             data: [],
-  //           });
-  //         });
-  //     } else {
-  //       res.status(404).send({
-  //         success: false,
-  //         message: `user id ${userId} not found`,
-  //       });
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).send({
-  //       success: false,
-  //       message: err.message,
-  //       data: [],
-  //     });
-  //   });
 };
 
 exports.deleteTransfers = (req, res) => {
@@ -211,57 +194,91 @@ exports.updateTransfer = (req, res) => {
   }
 };
 
-exports.getTransfers = (req, res) => {
-  let { page, limit, name } = req.query;
-  if (!limit) limit = 5;
-  else limit = parseInt(limit);
-  if (!page) page = 1;
-  else page = parseInt(page);
-  if (name) {
-    Transfers.getTransferName(req.userId,name)
-      .then((results) => {
-        if (!_.isEmpty(results[0])) {
-          res.status(200).send({
-            success: true,
-            message: `success fetch user name ${name}`,
-            data: results[0],
-          });
-        } else {
-          res.status(404).send({
-            success: false,
-            message: `transaction ${name} cannot found`,
-            data: [],
-          });
-        }
+exports.getIncome = async (req,res) => {
+  try{
+    let total = 0;
+    const id  = req.userId;
+    const income = await Transfers.findIncome(id);
+    if(_.isEmpty(income)){
+      return res.status(200).send({
+        success: true,
+        message: `success fetch income ${id}`,
+        data: [
+          { average: 0 }
+        ]
       })
-      .catch((err) => {
-        res.status(500).send({
-          success: false,
-          message: err.message,
-          data: [],
-        });
-      });
-  } else {
-    Transfers.fetch(req.userId, page,limit).then(results => {
-      if(!_.isEmpty(results[0])){
-        res.status(200).send({
-          success: true,
-          message: "success fetch data user",
-          data: results[0]
-        })
-      }else{
-        res.status(404).send({
-          success: false,
-          message: "transaction not found",
-          data: []
-        })
-      }
-    }).catch(err => {
-      res.status(500).send({
-        success: false,
-        message: "Internal server error",
-        data:[]
-      })
+    }
+    income.map((item) => {
+      total += parseInt(item.amount);
+    });
+    return res.status(200).send({
+      success: true,
+      message: `sucess fetch income ${id}`,
+      data: [
+        { average : total }
+      ]
+    })
+  }catch(err){
+    return res.status(500).send({
+      success: false,
+      message: err.message,
+      data: []
     })
   }
 };
+
+exports.getExpense = async (req,res) => {
+  try {
+    let total = 0;
+    const id = req.userId;
+    const expense = await Transfers.findExpense(id);
+    if(_.isEmpty(expense)){
+      return res.status(200).send({
+        success: true,
+        message: `success fetch expense ${id}`,
+        data: [
+          { average : 0}
+        ]
+      })
+    }
+    expense.map((item) => {
+      total += parseInt(item.amount);
+    })
+    return res.status(200).send({
+      success: true,
+      message: `success fetch expense ${id}`,
+      data: [
+        { average : total }
+      ]
+    })
+  }catch(err){
+    return res.status(500).send({
+      success: false,
+      message: err.message,
+      data: []
+    })
+  }
+};
+
+exports.getTransfersByUserLogin = async (req,res) => {
+  try {
+    const id = req.userId;
+    let { page, limit } = req.query;
+    if (!limit) limit = 5;
+    else limit = parseInt(limit);
+    if (!page) page = 1;
+    else page = parseInt(page);
+    const transfers = await Transfers.fetchByUserLogin(id,page,limit);
+    return res.status(200).send({
+      success: true,
+      message: "success",
+      data: transfers[0]
+    })
+  }catch(err){
+    return res.status(500).send({
+      success: false,
+      message: err.message,
+      data: []
+    })
+  }
+}
