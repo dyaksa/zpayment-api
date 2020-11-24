@@ -121,6 +121,7 @@ exports.login = (req, res) => {
             id: user[0].id,
             firstName: user[0].firstName,
             lastName: user[0].lastName,
+            uuid: user[0].uuid
           },
           message: "user is loged in",
         });

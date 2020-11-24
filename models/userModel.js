@@ -25,7 +25,7 @@ module.exports = class User {
     return new Promise((resolve, reject) => {
       db.query(
         `SELECT * FROM roles JOIN users ON roles.id = users.roles WHERE (users.id != ${id})  LIMIT ${limit} OFFSET ${
-          (1 - page) * limit
+          (page - 1) * limit
         }`
       )
         .then((results) => {
@@ -87,7 +87,7 @@ module.exports = class User {
   static getUserByName(id,name, limit, page){
     return new Promise((resolve,reject) => {
       db.query(`SELECT * FROM roles JOIN users ON roles.id = users.roles WHERE (users.firstName LIKE '%${name}%' AND users.id != ${id}) ORDER BY users.firstName LIMIT ${limit} OFFSET ${
-        (1 - page) * limit
+        (page - 1) * limit
       }`)
       .then(results => {
         resolve(results);

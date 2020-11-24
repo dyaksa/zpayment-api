@@ -27,7 +27,7 @@ module.exports = class Transfer {
     JOIN users a ON transactions.receive_id = a.id
     JOIN users b ON transactions.sender_id = b.id
     WHERE (transactions.receive_id = ${id} OR transactions.sender_id = ${id}) ORDER BY transactions.id DESC LIMIT ${limit} OFFSET ${
-      (1 - page) * limit
+      (page - 1) * limit
     }`;
     return new Promise((resolve,reject) => {
       return db.query(query)
