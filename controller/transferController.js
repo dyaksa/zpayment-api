@@ -59,7 +59,7 @@ exports.addTransfers = async (req, res) => {
 
     const notification = {
       headings: {
-        "en": "Congratulations your funds have been entered 🌈"
+        "en": `Congratulations your funds have been entered 🔔`
       },
       contents: {
         "en": `Transfer from ${sender[0][0].firstName} ${sender[0][0].lastName} of ${amount} has entered your wallet 🎁`

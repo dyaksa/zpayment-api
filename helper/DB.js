@@ -1,10 +1,10 @@
 const mysql = require("mysql2");
 
 const conn = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "zpayment",
+  host: "maridadb-1.cvddkp7ijaot.us-east-1.rds.amazonaws.com",
+  user: "admin",
+  password: "tuesblues_030195",
+  database:"zpayment",
 });
 
 module.exports = conn.promise();

@@ -105,6 +105,7 @@ exports.userUpdate = (req, res) => {
 };
 
 exports.getUser = (req, res) => {
+  const id = req.userId;
   let { page, limit, name } = req.query;
   if (!page) page = 1;
   else page = parseInt(page);
@@ -112,7 +113,7 @@ exports.getUser = (req, res) => {
   else limit = parseInt(limit);
 
   if(name){
-    User.getUserByName(name,limit,page)
+    User.getUserByName(id,name,limit,page)
     .then(results => {
       if(!_.isEmpty(results[0])){
         res.status(200).send({
@@ -136,7 +137,7 @@ exports.getUser = (req, res) => {
     })
   }else{
     //when name is empty
-    User.fetch(page, limit)
+    User.fetch(id, page, limit)
     .then((results) => {
       res.status(200).send({
         success: true,

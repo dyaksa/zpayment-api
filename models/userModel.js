@@ -21,10 +21,10 @@ module.exports = class User {
     });
   }
 
-  static fetch(page, limit) {
+  static fetch(id,page, limit) {
     return new Promise((resolve, reject) => {
       db.query(
-        `SELECT * FROM roles JOIN users ON roles.id = users.roles LIMIT ${limit} OFFSET ${
+        `SELECT * FROM roles JOIN users ON roles.id = users.roles WHERE (users.id != ${id})  LIMIT ${limit} OFFSET ${
           (1 - page) * limit
         }`
       )
@@ -84,9 +84,9 @@ module.exports = class User {
     });
   }
 
-  static getUserByName(name, limit, page){
+  static getUserByName(id,name, limit, page){
     return new Promise((resolve,reject) => {
-      db.query(`SELECT * FROM roles JOIN users ON roles.id = users.roles WHERE users.firstName LIKE '%${name}%' ORDER BY users.firstName LIMIT ${limit} OFFSET ${
+      db.query(`SELECT * FROM roles JOIN users ON roles.id = users.roles WHERE (users.firstName LIKE '%${name}%' AND users.id != ${id}) ORDER BY users.firstName LIMIT ${limit} OFFSET ${
         (1 - page) * limit
       }`)
       .then(results => {
