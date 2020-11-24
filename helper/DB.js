@@ -5,6 +5,7 @@ const conn = mysql.createConnection({
   user: "admin",
   password: "tuesblues_030195",
   database:"zpayment",
+  connectTimeout: 60000
 });
 
 module.exports = conn.promise();
