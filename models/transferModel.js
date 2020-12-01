@@ -12,18 +12,15 @@ module.exports = class Transfer {
   }
 
   static fetchByUserLogin(id,page,limit) {
-    const query = `SELECT 
-    transactions.id as t_id, 
-    transactions.amount, 
-    transactions.date, 
-    transactions.note, 
-    transactions.sender_id,
-    transactions.receive_id,
-    transactions.category,
-    a.firstName,
-    a.lastName,
-    a.phone,
-    a.photo FROM transactions 
+    const query = `SELECT transactions.*,
+    a.firstName as receive_firstname,
+    a.lastName as receive_lastname,
+    b.firstname as sender_firstname,
+    b.lastname as sender_lastname,
+    a.phone as receive_phone,
+    b.phone as sender_phone,
+    a.photo as receive_photo,
+    b.photo as sender_photo FROM transactions 
     JOIN users a ON transactions.receive_id = a.id
     JOIN users b ON transactions.sender_id = b.id
     WHERE (transactions.receive_id = ${id} OR transactions.sender_id = ${id}) ORDER BY transactions.id DESC LIMIT ${limit} OFFSET ${
