@@ -260,6 +260,52 @@ exports.getExpense = async (req,res) => {
   }
 };
 
+exports.getTransactionsToday = async (req,res) => {
+  try {
+    const id = req.userId;
+    const transactions = await Transfers.findTransactionToday(id);
+    return res.status(200).send({
+      success: true,
+      status: 200,
+      message: "successfully",
+      data: transactions[0]
+    })
+  }catch(err){
+    return res.status(500).send({
+      success: false,
+      status: 500,
+      message: `internal server error ${err.message}`
+    })
+  }
+}
+
+exports.getTransactionsByWeek = async (req,res) => {
+  try {
+    const id = req.userId;
+    const transactions = await Transfers.findDataByWeekAndLogin(id);
+    if(!_.isEmpty(transactions[0])){
+      return res.status(200).send({
+        success: true,
+        status: 200,
+        message: "data last week founded",
+        data: transactions[0]
+      })
+    }
+    return res.status(200).send({
+      success: true,
+      status: 200,
+      message: "data last week not found",
+      data: []
+    })
+  }catch(err){
+    return res.status(500).send({
+      success: false,
+      status: 500,
+      message: `internal server error : ${err.message}`,
+    })
+  }
+};
+
 exports.getTransfersByUserLogin = async (req,res) => {
   try {
     const id = req.userId;

@@ -15,6 +15,14 @@ route.get("/expense",
 [verifyJwtToken.verifyToken],
 transferController.getExpense);
 
+route.get("/week",
+[verifyJwtToken.verifyToken],
+transferController.getTransactionsByWeek);
+
+route.get("/today",
+[verifyJwtToken.verifyToken],
+transferController.getTransactionsToday);
+
 route.get("/:id",
 [verifyJwtToken.verifyToken, verifyJwtToken.isAdmin], 
 transferController.getById);
