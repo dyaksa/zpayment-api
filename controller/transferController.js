@@ -260,10 +260,10 @@ exports.getExpense = async (req,res) => {
   }
 };
 
-exports.getTransactionsToday = async (req,res) => {
+exports.getTransactionsMonth = async (req,res) => {
   try {
     const id = req.userId;
-    const transactions = await Transfers.findTransactionToday(id);
+    const transactions = await Transfers.findTransactionLastMonth(id);
     return res.status(200).send({
       success: true,
       status: 200,

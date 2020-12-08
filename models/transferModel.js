@@ -13,7 +13,7 @@ module.exports = class Transfer {
     });
   }
 
-  static findTransactionToday(id){
+  static findTransactionLastMonth(id){
     const query = `
       SELECT transactions.*, 
       DATE_FORMAT(transactions.date,'%Y%m%d') as date,
@@ -28,7 +28,7 @@ module.exports = class Transfer {
       JOIN users a ON transactions.receive_id = a.id
       JOIN users b ON transactions.sender_id = b.id
       WHERE (transactions.receive_id = ${id} OR transactions.sender_id = ${id}) 
-      AND (date >= DATE_FORMAT(CURDATE(), '%Y%m%d'))
+      AND (date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY))
       ORDER BY transactions.id DESC`;
       return new Promise((resolve,reject) => {
           db.query(query)

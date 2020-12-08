@@ -5,6 +5,7 @@ const verify = require("../middleware/verify");
 const verifyJwtToken = require("../middleware/verifyJwtToken");
 const upload = require("../middleware/upload");
 
+route.post("/:email",userController.getByEmail);
 route.get("/", [verifyJwtToken.verifyToken], userController.getUser);
 route.get("/:id",[verifyJwtToken.verifyToken], userController.getUserById);
 route.get("/auth/detail",[verifyJwtToken.verifyToken], userController.getUserLogin);

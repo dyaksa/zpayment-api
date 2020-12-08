@@ -79,7 +79,7 @@ module.exports = class User {
           resolve(results);
         })
         .catch((err) => {
-          reject(err);
+          reject(new Error(err));
         });
     });
   }

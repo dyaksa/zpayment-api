@@ -155,10 +155,6 @@ exports.getUser = (req, res) => {
   }
 };
 
-exports.testUser = (req,res) => {
-  console.log("halo");
-}
-
 exports.getUserLogin = (req, res) => {
   const id  = req.userId;
   User.getById(id)
@@ -185,6 +181,33 @@ exports.getUserLogin = (req, res) => {
       });
     });
 };
+
+exports.getByEmail = async (req,res) => {
+  try {
+    const { email } = req.params;
+    const user = await User.findByEmail(email);
+    if(!_.isEmpty(user[0])){
+      return res.status(200).send({
+        success: true,
+        status: 200,
+        message: "email found",
+        data: user[0]
+      })
+    }
+    return res.status(200).send({
+      success: true,
+      status: 200,
+      message: "email not found",
+      data: []
+    })
+  }catch(err){
+    return res.status(500).send({
+      success: false,
+      status: 500,
+      message: `internal server error: ${err.message}`
+    })
+  }
+}
 
 exports.getUserById =  async (req,res) => {
     try {
