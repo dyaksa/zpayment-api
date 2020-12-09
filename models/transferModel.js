@@ -13,6 +13,34 @@ module.exports = class Transfer {
     });
   }
 
+  static findTransactionsToday(id){
+    const query = `
+    SELECT transactions.*, 
+    DATE_FORMAT(transactions.date,'%Y%m%d') as date,
+    DATE_FORMAT(CURDATE(),'%Y%m%d') as sample_date,
+    a.firstName as receive_firstname,
+    a.lastName as receive_lastname,
+    b.firstname as sender_firstname,
+    b.lastname as sender_lastname,
+    a.phone as receive_phone,
+    b.phone as sender_phone,
+    a.photo as receive_photo,
+    b.photo as sender_photo FROM transactions 
+    JOIN users a ON transactions.receive_id = a.id
+    JOIN users b ON transactions.sender_id = b.id
+    WHERE (transactions.receive_id = ${id} OR transactions.sender_id = ${id})
+    AND (date >= DATE_FORMAT(CURDATE(),'%Y%m%d')) 
+    ORDER BY transactions.id DESC`;
+    return new Promise((resolve,reject) => {
+      db.query(query)
+      .then(results => {
+        resolve(results);
+      }).catch(err => {
+        reject(new Error(err));
+      })
+    })
+  }
+
   static findTransactionLastMonth(id){
     const query = `
       SELECT transactions.*, 

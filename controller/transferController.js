@@ -279,6 +279,34 @@ exports.getTransactionsMonth = async (req,res) => {
   }
 }
 
+exports.getTransactionsToday = async (req,res) => {
+  try {
+    const id = req.userId;
+    const results = await Transfers.findTransactionsToday(id);
+    if(!_.isEmpty(results[0])){
+      return res.status(200).send({
+        success: true,
+        status: 200,
+        message: "successfully get transations today",
+        data: results[0]
+      })
+    }
+    return res.status(200).send({
+      success: true,
+      status: 404,
+      message: `transactions today cannot found`,
+      data: []
+    })
+  }catch(err){
+    return res.status(500).send({
+      success: false,
+      status: 500,
+      message: `internal server error ${err.message}`
+    })
+  }
+}
+
+
 exports.getTransactionsByWeek = async (req,res) => {
   try {
     const id = req.userId;
