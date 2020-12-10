@@ -2,7 +2,6 @@ const Upload = require("../models/uploadModel");
 const cloudinary = require("../helper/cloudinary");
 
 exports.uploadPhoto = async (req,res) => {
-    const path = `${process.env.BASE_URI}/${req.file.filename}`;
     try {
         const image = await cloudinary.uploader.upload(req.file.path);
         const updated = await Upload.addPhoto(req.userId, image.secure_url);

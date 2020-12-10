@@ -15,7 +15,6 @@ const db = require("./helper/DB");
 const io = socketio(server);
 const dotenv = require("dotenv").config();
 const PORT = process.env.PORT || 8000;
-let interval;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

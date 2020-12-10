@@ -2,6 +2,7 @@ const Transfers = require("../models/transferModel");
 const User = require("../models/userModel");
 const _ = require("underscore");
 const entries = require("../helper/entries");
+const pusher = require("../helper/pusher");
 const OneSignal = require("onesignal-node");
 const client = new OneSignal.Client(process.env.ONESIGNAL_APP_ID,process.env.ONESIGNAL_API_KEY);
 
@@ -70,6 +71,9 @@ exports.addTransfers = async (req, res) => {
       ]
     }
     const response = await client.createNotification(notification)
+    pusher.trigger(`${receive[0][0].uuid}`,'my-balance',{
+      balance: receiveBalance
+    })
     return res.status(201).send({
       success: true,
       message: `success transfer to ${receive[0][0].firstName} amount ${amount}`,
