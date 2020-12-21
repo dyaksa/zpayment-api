@@ -17,7 +17,7 @@ exports.charge = async (req,res) => {
         const result = await services.postCharge(amount,data);
         if(result.token){
             return res.status(200).send({
-                success: false,
+                success: true,
                 status: 200,
                 message: "token found",
                 token: result.token
