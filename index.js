@@ -10,6 +10,7 @@ const userRoute = require("./routes/user");
 const transferRoute = require("./routes/transfer");
 const authRoute = require("./routes/auth");
 const uploadRoute = require("./routes/upload");
+const chargeRoute = require("./routes/charge");
 const db = require("./helper/DB");
 
 const io = socketio(server);
@@ -37,6 +38,8 @@ app.use("/api/v1/transfer", transferRoute);
 app.use("/api/v1/auth", authRoute);
 //upload
 app.use("/api/v1/upload", uploadRoute);
+//charge
+app.use("/api/v1/charge", chargeRoute);
 
 io.on("connection",(socket) => {
   const uuid = socket.handshake.query.uuid;
