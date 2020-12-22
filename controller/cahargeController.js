@@ -44,7 +44,7 @@ exports.accepted = async (req,res) => {
         if(gross_amount){
             const id = req.userId;
             const user = await User.getById(id);
-            const currentBalance = user[0][0].balance;
+            const currentBalance = parseInt(user[0][0].balance);
             const successBalance = parseInt(gross_amount);
             const total = currentBalance + successBalance;
             const data = Object.entries({balance: total}).map((item) => {
