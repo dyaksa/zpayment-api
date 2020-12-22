@@ -76,9 +76,6 @@ module.exports = {
                     va_number: `1234567890`,
                     recipient_name: `${data.name}`
                 },
-                callbacks: {
-                    finish: `${process.env.BASE_URI}/accepted/?id=${data.id}&name=${data.name}&`
-                },
                 expiry: {
                     start_time: `${newDate} +0700`,
                     unit: "minutes",
