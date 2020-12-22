@@ -37,3 +37,28 @@ exports.charge = async (req,res) => {
         })
     }
 }
+
+exports.accepted = async (req,res) => {
+    try{
+        const {id, order_id,name} = req.query;
+        const status = await services.getStatus(order_id);
+        const user = await User.getById(id);
+        if(status.transaction_status == "settlement" && status.order_id == order_id){
+            const currentBalance = user[0][0].balance;
+            const successBalance = parseInt(status.gross_amount);
+            const total = currentBalance + successBalance;
+            await User.updateById(id,{balance: total});
+        }
+        return res.status(201).send({
+            success: true,
+            status: 201,
+            messaege: `topup successfully`
+        })
+    }catch(err){
+        return res.status(500).send({
+            success: false,
+            status: 500,
+            message: `internal server error ${err.message}`
+        })
+    }
+}

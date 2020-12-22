@@ -77,7 +77,7 @@ module.exports = {
                     recipient_name: `${data.name}`
                 },
                 callbacks: {
-                    finish: `${process.env.API_URI}/accepted/?id=${data.id}&name=${data.name}&`
+                    finish: `${process.env.BASE_URI}/accepted/?id=${data.id}&name=${data.name}&`
                 },
                 expiry: {
                     start_time: `${newDate} +0700`,
@@ -92,5 +92,20 @@ module.exports = {
                 reject(new Error(err));
             }) 
         })
+    },
+
+    getStatus: (order_id) => {
+        return new Promise((resolve,reject) => {
+            axios.get(`${process.env.URI}/${order_id}/status`,{
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic U0ItTWlkLXNlcnZlci1HU1FXVThfclp2VVNnZ0VLUm5NbFNZUS0=`
+                }
+            }).then(res => {
+                resolve(res.data);
+            }).catch(err => {
+                reject(err);
+            })
+        });
     }
 }
