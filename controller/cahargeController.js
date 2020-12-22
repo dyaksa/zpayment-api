@@ -47,7 +47,12 @@ exports.accepted = async (req,res) => {
             const currentBalance = user[0][0].balance;
             const successBalance = parseInt(gross_amount);
             const total = currentBalance + successBalance;
-            await User.updateById(id,{balance: total});
+            const data = Object.entries({balance: total}).map((item) => {
+                return parseInt(item[1]) > 0
+                  ? `${item[0]} = ${item[1]}`
+                  : `${item[0]} = '${item[1]}'`;
+              });
+            await User.updateById(id,data);
             return res.status(201).send({
                 success: true,
                 status: 201,
