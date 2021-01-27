@@ -1,10 +1,10 @@
 const mysql = require("mysql2");
 
 const conn = mysql.createConnection({
-  host: 'maridadb-1.cvddkp7ijaot.us-east-1.rds.amazonaws.com',
-  user: 'admin',
+  host: 'freedb.tech',
+  user: 'freedbtech_dyaksaaa',
   password: 'tuesblues_030195',
-  database: 'zpayment',
+  database: 'freedbtech_zwallet_mobile_app',
   connectTimeout: 12000
 });
 
